@@ -1,29 +1,74 @@
-print("Ingrese su nombre de tarjeta")
-nombre_tarjeta = input()
+class tarjeta():
 
-print("Ingrese la tasa de interes")
-tasa_interes = input()
+    """
+    Toma los valores iniciales para crear la tarjeta
+    """
+    def __init__(self):
+        self.nombre_tarjeta = input("Ingrese el nombre de tarjeta: ")
+        self.tasa_interes = int(input("Ingrese la Tasa de interes: "))
+        self.deuda= int(input("Ingrese la Deuda Inicial: "))
+        self.abono_a_realizar = 0
 
-print("Ingrese la deuda actual")
-deuda = input()
+    
+    def abonar_tarjeta(self):
 
-print("Ingrese el pago a realizar")
-pago= input()
-while pago > deuda:
-    print("Monto no valido. Ingrese de nuevo")
-    pago= input()
+        abono= input("Ingrese el Abono a realizar: ")
+        while int(abono) > self.deuda:
+            print("Monto no valido. Ingrese de nuevo: ")
+            abono= input()
 
+        self.abono_a_realizar = int(abono)
 
-print("Ingrese el monto del nuevo cargo")
-cargo= input()
+    """
+    Captura un nuevo cargo
+    """
+    def captura_nuevo_cargo (self):
 
+        nuevo_cargo= int(input("Ingrese el monto del nuevo cargo: "))
 
-interes_mensual = int(tasa_interes)/12
-deuda_recalculada = (int(deuda) - int(pago))*( 1 + int(interes_mensual)) 
-nueva_deuda = deuda_recalculada + int(cargo)
+        interes_mensual = self.tasa_interes/12
+        deuda_recalculada = (self.deuda - self.abono_a_realizar)*(1+interes_mensual)
+        self.deuda = deuda_recalculada + nuevo_cargo
 
-print("Hola " + str(nombre_tarjeta))
-print("interes_mensual " + str(interes_mensual))
-print("deuda_recalculada " + str(deuda_recalculada))
-print("nueva_deuda " + (nueva_deuda))
-print("Gracias por su pago. La deuda del proximo mes es de: " + str(nueva_deuda))
+        print("Deuda actualizada, usted debe: " + str(self.deuda))
+        
+    """
+    Funcion que emula los pagos abonados a travez de los meses
+    """
+    def pago_recurrente (self):
+
+        deuda_actual = self.deuda
+        print("El abono actual ingresado es d: " + str(self.abono_a_realizar))
+        print("Proyectando pagos...")
+        num_pagos = 0
+        while deuda_actual > 0:
+            num_pagos+=1
+            deuda_actual = deuda_actual - self.abono_a_realizar
+            print("Pago {0}: Deuda total: {1}".format(num_pagos,deuda_actual))
+
+        print("Su deuda quedaria saldada en {0} meses".format(num_pagos))
+
+class tarjeta_de_servicios(tarjeta):
+    def __init__(self):
+        super().__init__()
+        self.tarjeta_servicio = True
+
+    def abonar_tarjeta(self):
+        abono= input("Realiza el pago total de ${0} de su deuda: ".format(self.deuda))
+        while int(abono) != self.deuda:
+            print("Monto no valido. Ingrese de nuevo")
+            abono= input()
+
+        self.abono_a_realizar = int(abono)
+
+    def pago_recurrente (self):
+
+        deuda_actual = self.deuda
+        print("El abono actual ingresado es de: " + str(self.abono_a_realizar))
+        print("Proyectando pagos...")
+        if deuda_actual == self.abono_a_realizar:
+            deuda_actual = deuda_actual - self.abono_a_realizar
+            print("Pago 1: Deuda total: {0}".format(deuda_actual))
+            print("Por ser tajeta de servicio su deuda va a ser saldada en una exhibicion")
+        else:
+            print("El Abono a realizar debe ser la totalidad de la deuda. Reingrese su Abono")
